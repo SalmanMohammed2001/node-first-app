@@ -7,4 +7,4 @@ const CustomerSchema=new mongoose.Schema({
     salary:{type:Number, required:true}
 });
 
-module.exports=mongoose.model('Customer',CustomerSchema)
+module.exports=mongoose.model('customer',CustomerSchema)

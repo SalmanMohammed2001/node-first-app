@@ -2,6 +2,7 @@ const Customer=require('../model/Customerschema')
 
 
 const saveCustomer=(req,res)=>{
+    console.log(req.body)
     const tempCustomer=new Customer({
             nic:req.body.nic,
             name:req.body.name,
@@ -15,12 +16,12 @@ const saveCustomer=(req,res)=>{
     })
 }
 const findCustomer=(req,res)=>{
-    Customer.updateOne({nic:req.params.nic}).then((result)=>{
-        if(result===null){
-            res.status(200).json({status:false,message:'customer not found'})
-        }else{
-            res.status(200).json({status:true,message:'customer details',data:result})
-        }
+        Customer.findOne({nic:req.params.nic}).then((result)=>{
+            if(result===null){
+                res.status(200).json({status:false,message:'customer not found'})
+            }else{
+                res.status(200).json({status:true,message:'customer details',data:result})
+            }
         }).catch(error=>{
         res.status(500).json({status:false,message:"Try Again",data:error})
     })
@@ -30,15 +31,13 @@ const findCustomer=(req,res)=>{
 
 
 const updateCustomer=(req,res)=>{
-    Customer.findOne({nic:req.params.nic},{
-
+    Customer.updateOne({nic:req.headers.nic},{
         name:req.body.name,
         address:req.body.address,
         salary:req.body.salary,
 
 
     }).then(result=>{
-
         if(result.modifiedCount>0){
             res.status(201).json({message:'customer updated',data:result})
         }else{
@@ -51,19 +50,23 @@ const updateCustomer=(req,res)=>{
 }
 
 
-const deleteCustomer=(req,res)=>{
-            Customer.deleteOne({nic:req.headers.nic}).then((result)=>{
-                if(result.deletedCount>0){
-                    res.status(200).json({status:true,message:"customer delete"})
-                }else{
-                    res.status(400).json({status:false,message:'Try Again'})
-                }
+const deleteCustomer=(req,res)=> {
+    console.log({nic: req.headers.nic})
+       Customer.deleteOne({nic:req.headers.nic}).then((result)=>{
 
 
-            }).catch(error=>{
-                res.status(500).json(error)
-            })
+           if(result.deletedCount>0){
+               res.status(200).json({status:true,message:"customer delete"})
+           }else{
+               res.status(400).json({status:false,message:'Try Again'})
+           }
+
+
+       }).catch(error=>{
+           res.status(500).json(error)
+       })
 }
+
 
 
 const findAllCustomer=(req,res)=>{
