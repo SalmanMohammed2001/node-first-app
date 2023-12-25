@@ -15,27 +15,72 @@ const saveCustomer=(req,res)=>{
     })
 }
 const findCustomer=(req,res)=>{
-    Customer.findOne({nic:req.params.nic}).then((result)=>{
-        if(result==null){
-            res.status(404).json({status:false,message:'customer not found'})
-        }else {
-            res.status(200).json({status:true,data:result})
+    Customer.updateOne({nic:req.params.nic}).then((result)=>{
+        if(result===null){
+            res.status(200).json({status:false,message:'customer not found'})
+        }else{
+            res.status(200).json({status:true,message:'customer details',data:result})
         }
+        }).catch(error=>{
+        res.status(500).json({status:false,message:"Try Again",data:error})
     })
+
+
 }
 
 
 const updateCustomer=(req,res)=>{
+    Customer.findOne({nic:req.params.nic},{
 
+        name:req.body.name,
+        address:req.body.address,
+        salary:req.body.salary,
+
+
+    }).then(result=>{
+
+        if(result.modifiedCount>0){
+            res.status(201).json({message:'customer updated',data:result})
+        }else{
+            res.status(201).json({status:false,message:'Try again'})
+        }
+
+    }).catch(error=>{
+        res.status(500).json(error)
+    })
 }
 
 
 const deleteCustomer=(req,res)=>{
+            Customer.deleteOne({nic:req.headers.nic}).then((result)=>{
+                if(result.deletedCount>0){
+                    res.status(200).json({status:true,message:"customer delete"})
+                }else{
+                    res.status(400).json({status:false,message:'Try Again'})
+                }
 
+
+            }).catch(error=>{
+                res.status(500).json(error)
+            })
 }
 
 
 const findAllCustomer=(req,res)=>{
 
+    Customer.find().then(result=>{
+        res.status(200).json({status:true,data:result})
+    }).catch(error=>{
+        res.status(500).json(error)
+    }).catch(error=>{
+        res.status(500).json(error)
+    })
 }
 
+module.exports={
+    saveCustomer,
+    findCustomer,
+    findAllCustomer,
+    updateCustomer,
+    deleteCustomer
+}
