@@ -1,6 +1,7 @@
 const UserSchema=require('../model/UserSchema')
 const bcrypt=require('bcrypt')
 const e = require("express");
+const jsonWebToken=require('jsonwebtoken')
 
 const signup= async (req,res)=>{
     UserSchema.findOne({username:req.body.username}).then((result)=>{
@@ -44,11 +45,16 @@ const login= async (req,res)=>{
         if(selectedUser===null){
             return res.status(404).json({message:'user name not found!'})
         }else {
-
             bcrypt.compare(req.body.password, selectedUser.password, function(err, result) {
-
                 if(result){
-                    res.status(200).json({message:'login',data:result})
+
+                    // jwt
+                    const expiresIn=3600
+                   const token= jsonWebToken.sign({'username':selectedUser.username},
+                       process.env.SECRET_KEY,{expiresIn})
+
+                    res.setHeader('Authorization',`Bearer ${token}`)
+                    res.status(200).json({message:'login success and Check header',})
                 }else {
                     return res.status(401).json({message:'password InCrate'})
                 }
