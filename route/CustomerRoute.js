@@ -1,9 +1,6 @@
 
 const customerController=require('../controller/CustomerController')
-
-
 const express=require('express');
-
 const router=express.Router();
 
 router.post("/save-customer",customerController.saveCustomer);
