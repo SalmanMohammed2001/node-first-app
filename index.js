@@ -12,6 +12,7 @@ app.use(bodyParser.json())
 const port=process.env.SERVER_PORT
 
 const customerRoute=require('./route/CustomerRoute')
+const userRouter=require('./route/UserRoute')
 
 mongoose.connect('mongodb://127.0.0.1:27017/customer_mongo').then(()=>{
 
@@ -21,3 +22,4 @@ mongoose.connect('mongodb://127.0.0.1:27017/customer_mongo').then(()=>{
 })
 
 app.use("/api/v1/customers",customerRoute)
+app.use("/api/v1/users",userRouter)
